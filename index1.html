@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هجوم DDoS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #00ff00;
+            padding: 10px;
+            line-height: 1.4;
+            background-image: 
+                radial-gradient(circle at 1px 1px, #00ff00 1px, transparent 0);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+        }
+        
+        /* تأثير الكتابة المتحركة */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-1px, 1px); }
+            40% { transform: translate(-1px, -1px); }
+            60% { transform: translate(1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 10px auto;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff00;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scanline 2s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #00ff00;
+            position: relative;
+        }
+        
+        .hacker-icon {
+            font-size: 30px;
+            color: #00ff00;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #00ff00;
+            animation: glitch 0.5s infinite;
+        }
+        
+        .title {
+            color: #ff0000;
+            font-size: 20px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px #ff0000;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #00ff00;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .target-input-section {
+            margin-bottom: 15px;
+            background: rgba(10, 20, 10, 0.5);
+            padding: 12px;
+            border: 1px solid #004400;
+        }
+        
+        .input-group {
+            margin-bottom: 10px;
+        }
+        
+        .input-label {
+            display: block;
+            color: #00ff00;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .target-input {
+            width: 100%;
+            padding: 8px;
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .target-input:focus {
+            box-shadow: 0 0 5px #00ff00;
+        }
+        
+        .input-hint {
+            color: #666;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+        
+        .attack-settings {
+            background: rgba(20, 10, 10, 0.5);
+            padding: 12px;
+            border: 1px solid #440000;
+            margin-bottom: 15px;
+        }
+        
+        .setting-group {
+            margin-bottom: 12px;
+        }
+        
+        .setting-title {
+            color: #ff4444;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .strength-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .strength-btn {
+            flex: 1;
+            padding: 6px;
+            text-align: center;
+            background: #111;
+            border: 1px solid #444;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .strength-btn.active {
+            background: #220000;
+            border-color: #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 5px #ff0000;
+        }
+        
+        .attack-type {
+            width: 100%;
+            padding: 6px;
+            background: #111;
+            border: 1px solid #444;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .proxy-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .proxy-btn {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            background: #111;
+            border: 1px solid #004400;
+            color: #00aa00;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .proxy-btn.active {
+            background: #002200;
+            border-color: #00ff00;
+            color: #00ff00;
+            box-shadow: 0 0 5px #00ff00;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .start-btn {
+            flex: 2;
+            padding: 12px;
+            background: #002200;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            text-shadow: 0 0 5px #00ff00;
+            transition: all 0.3s;
+        }
+        
+        .start-btn:hover {
+            background: #004400;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .stop-btn {
+            flex: 1;
+            padding: 12px;
+            background: #220000;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .stop-btn:hover {
+            background: #440000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        
+        .attack-status {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-title {
+            color: #00ff00;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .timer {
+            font-size: 28px;
+            text-align: center;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            text-shadow: 0 0 10px #ff0000;
+            letter-spacing: 3px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            background: rgba(20, 20, 20, 0.8);
+            padding: 8px;
+            border: 1px solid #333;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        
+        .stat-value {
+            color: #00ff00;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .developer-contact {
+            background: rgba(0, 20, 40, 0.7);
+            border: 1px solid #0088cc;
+            padding: 10px;
+            text-align: center;
+            color: #0088cc;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .developer-contact:hover {
+            background: rgba(0, 30, 60, 0.9);
+            box-shadow: 0 0 10px #0088cc;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #444;
+            font-size: 11px;
+            padding-top: 10px;
+            border-top: 1px solid #222;
+        }
+        
+        /* تأثيرات النص */
+        .glitch-text {
+            animation: glitch 0.5s infinite;
+        }
+        
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        /* تأثير المطر الرقمي */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        /* تأثيرات الأحرف الخضراء الساقطة */
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <!-- مطر المصفوفة الخلفي -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="hacker-icon">
+                <i class="fas fa-skull-crossbones"></i>
+            </div>
+            <div class="title glitch-text">هجوم DDoS</div>
+            <div class="subtitle">أداة هجوم 𝐇𝐀𝐌𝐙𝐀</div>
+        </div>
+        
+        <div class="target-input-section">
+            <div class="input-group">
+                <label class="input-label">أدخل الرابط أو IP للهجوم:</label>
+                <input type="text" id="targetInput" class="target-input" placeholder="مثال: https://example.com أو 192.168.1.1">
+                <div class="input-hint">يتم حفظ الهدف تلقائياً عند بدء الهجوم</div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">الهدف الحالي:</label>
+                <div id="currentTarget" class="target-input" style="background: #111; color: #00ff00; cursor: default;">
+                    لم يتم تعيين هدف بعد
+                </div>
+            </div>
+        </div>
+        
+        <div class="attack-settings">
+            <div class="setting-group">
+                <div class="setting-title">قوة الهجوم:</div>
+                <div class="strength-options">
+                    <div class="strength-btn active" data-strength="weak">ضعيف</div>
+                    <div class="strength-btn" data-strength="medium">متوسط</div>
+                    <div class="strength-btn" data-strength="strong">قوي</div>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <div class="setting-title">نوع الهجوم:</div>
+                <select id="attackType" class="attack-type">
+                    <option value="ddos">هجوم DDoS عادي</option>
+                    <option value="http">هجوم HTTP Flood</option>
+                    <option value="udp">هجوم UDP Flood</option>
+                    <option value="slowloris">هجوم Slowloris</option>
+                </select>
+            </div>
+            
+            <div class="proxy-options">
+                <div class="proxy-btn active" data-proxy="with">مع بروكسي</div>
+                <div class="proxy-btn" data-proxy="without">بدون بروكسي</div>
+            </div>
+        </div>
+        
+        <div class="control-buttons">
+            <button id="startBtn" class="start-btn pulse">
+                <i class="fas fa-play"></i> بدء الهجوم
+            </button>
+            <button id="stopBtn" class="stop-btn">
+                <i class="fas fa-stop"></i> إيقاف
+            </button>
+        </div>
+        
+        <div class="attack-status">
+            <div class="status-title">حالة الهجوم</div>
+            <div id="timer" class="timer">00:00</div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">الحالة</div>
+                    <div id="statusValue" class="stat-value">جاهز</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">الوقت المنقضي</div>
+                    <div id="elapsedTime" class="stat-value">00:00</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">الحزم المرسلة</div>
+                    <div id="packetsSent" class="stat-value">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">معدل الهجوم</div>
+                    <div id="attackRate" class="stat-value">0/ثانية</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">الخيوط النشطة</div>
+                    <div id="activeThreads" class="stat-value">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">حزم النجاح</div>
+                    <div id="successPackets" class="stat-value">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">معدل الخطأ</div>
+                    <div id="errorRate" class="stat-value">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">العرض الترددي</div>
+                    <div id="bandwidth" class="stat-value">0 م.ب/ث</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="telegramContact" class="developer-contact">
+            <i class="fab fa-telegram-plane"></i>
+            <span>التواصل مع المطور</span>
+        </div>
+        
+        <div class="footer">
+            تم تطويره بواسطة ❍❥𝐇𝐀𝐌𝐙𝐀||:❥❍
+            <div style="font-size: 9px; margin-top: 5px; color: #333;">مع تحيات القياده حمزه</div>
+        </div>
+    </div>
+    
+    <script>
+        // ⚠️ ضع معرف التيليجرام الخاص بك هنا
+        const TELEGRAM_USERNAME = "jt_r3r";
+        
+        // حالة النظام
+        let state = {
+            attackActive: false,
+            target: "",
+            strength: "weak",
+            attackType: "ddos",
+            proxy: "with",
+            startTime: null,
+            elapsedSeconds: 0,
+            packets: 0,
+            successPackets: 0,
+            errorPackets: 0,
+            activeThreads: 0,
+            attackRate: 0,
+            bandwidth: 0
+        };
+        
+        // عناصر DOM
+        const elements = {
+            targetInput: document.getElementById('targetInput'),
+            currentTarget: document.getElementById('currentTarget'),
+            startBtn: document.getElementById('startBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            timer: document.getElementById('timer'),
+            statusValue: document.getElementById('statusValue'),
+            elapsedTime: document.getElementById('elapsedTime'),
+            packetsSent: document.getElementById('packetsSent'),
+            attackRate: document.getElementById('attackRate'),
+            activeThreads: document.getElementById('activeThreads'),
+            successPackets: document.getElementById('successPackets'),
+            errorRate: document.getElementById('errorRate'),
+            bandwidth: document.getElementById('bandwidth'),
+            attackType: document.getElementById('attackType'),
+            telegramContact: document.getElementById('telegramContact')
+        };
+        
+        // مؤقتات
+        let mainInterval, updateInterval;
+        
+        // تهيئة الصفحة
+        function init() {
+            createMatrixRain();
+            setupEventListeners();
+            loadState();
+        }
+        
+        // إنشاء مطر المصفوفة الخلفي
+        function createMatrixRain() {
+            const matrixRain = document.getElementById('matrixRain');
+            const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + 'vw';
+                char.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                char.style.animationDelay = Math.random() * 5 + 's';
+                char.style.opacity = Math.random() * 0.5 + 0.1;
+                matrixRain.appendChild(char);
+            }
+        }
+        
+        // إعداد المستمعين للأحداث
+        function setupEventListeners() {
+            // زر البدء
+            elements.startBtn.addEventListener('click', startAttack);
+            
+            // زر الإيقاف
+            elements.stopBtn.addEventListener('click', stopAttack);
+            
+            // إدخال الهدف
+            elements.targetInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    setTarget();
+                    if (!state.attackActive) {
+                        startAttack();
+                    }
+                }
+            });
+            
+            // تغيير نوع الهجوم
+            elements.attackType.addEventListener('change', (e) => {
+                state.attackType = e.target.value;
+                saveState();
+            });
+            
+            // أزرار القوة
+            document.querySelectorAll('.strength-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.strength-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    state.strength = this.dataset.strength;
+                    saveState();
+                });
+            });
+            
+            // أزرار البروكسي
+            document.querySelectorAll('.proxy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.proxy-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    state.proxy = this.dataset.proxy;
+                    saveState();
+                });
+            });
+            
+            // زر التواصل
+            elements.telegramContact.addEventListener('click', () => {
+                window.open(`https://t.me/${TELEGRAM_USERNAME}`, '_blank');
+            });
+        }
+        
+        // تعيين الهدف
+        function setTarget() {
+            const target = elements.targetInput.value.trim();
+            if (target) {
+                state.target = target;
+                elements.currentTarget.textContent = target;
+                elements.currentTarget.style.color = '#00ff00';
+                saveState();
+                return true;
+            } else {
+                alert('⚠️ يرجى إدخال رابط أو IP صحيح');
+                return false;
+            }
+        }
+        
+        // بدء الهجوم
+        function startAttack() {
+            if (!setTarget()) return;
+            
+            if (!state.attackActive) {
+                state.attackActive = true;
+                state.startTime = Date.now();
+                state.elapsedSeconds = 0;
+                state.packets = 0;
+                state.successPackets = 0;
+                state.errorPackets = 0;
+                
+                // تحديث الواجهة
+                elements.statusValue.textContent = 'نشط';
+                elements.statusValue.style.color = '#ff0000';
+                elements.startBtn.disabled = true;
+                elements.targetInput.disabled = true;
+                
+                // تشغيل المؤقتات
+                mainInterval = setInterval(updateTimer, 1000);
+                updateInterval = setInterval(updateStats, 100);
+                
+                // تأثير صوتي
+                playSound('start');
+                
+                saveState();
+            }
+        }
+        
+        // إيقاف الهجوم
+        function stopAttack() {
+            if (state.attackActive) {
+                state.attackActive = false;
+                
+                // تحديث الواجهة
+                elements.statusValue.textContent = 'متوقف';
+                elements.statusValue.style.color = '#00ff00';
+                elements.startBtn.disabled = false;
+                elements.targetInput.disabled = false;
+                
+                // إيقاف المؤقتات
+                clearInterval(mainInterval);
+                clearInterval(updateInterval);
+                
+                // تأثير صوتي
+                playSound('stop');
+                
+                saveState();
+            }
+        }
+        
+        // تحديث المؤقت
+        function updateTimer() {
+            state.elapsedSeconds++;
+            
+            const minutes = Math.floor(state.elapsedSeconds / 60);
+            const seconds = state.elapsedSeconds % 60;
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            elements.timer.textContent = timeStr;
+            elements.elapsedTime.textContent = timeStr;
+        }
+        
+        // تحديث الإحصائيات
+        function updateStats() {
+            if (!state.attackActive) return;
+            
+            // زيادة عشوائية بناءً على قوة الهجوم
+            const strengthMultiplier = {
+                weak: 1,
+                medium: 3,
+                strong: 10
+            }[state.strength] || 1;
+            
+            // زيادة الحزم
+            const newPackets = Math.floor(Math.random() * 100 * strengthMultiplier) + 10;
+            state.packets += newPackets;
+            
+            // زيادة النجاحات والأخطاء
+            const successRate = 0.85 + (Math.random() * 0.1);
+            const newSuccess = Math.floor(newPackets * successRate);
+            const newError = newPackets - newSuccess;
+            
+            state.successPackets += newSuccess;
+            state.errorPackets += newError;
+            
+            // تحديث الخيوط النشطة
+            state.activeThreads = Math.floor(Math.random() * 100 * strengthMultiplier) + 10;
+            
+            // تحديث معدل الهجوم
+            state.attackRate = Math.floor(Math.random() * 1000 * strengthMultiplier) + 100;
+            
+            // تحديث العرض الترددي
+            state.bandwidth = Math.floor(Math.random() * 10 * strengthMultiplier) + 1;
+            
+            // تحديث الواجهة
+            updateUI();
+        }
+        
+        // تحديث واجهة المستخدم
+        function updateUI() {
+            elements.packetsSent.textContent = state.packets.toLocaleString();
+            elements.successPackets.textContent = state.successPackets.toLocaleString();
+            
+            const totalPackets = state.successPackets + state.errorPackets;
+            const errorRate = totalPackets > 0 ? (state.errorPackets / totalPackets * 100).toFixed(1) : 0;
+            elements.errorRate.textContent = `${errorRate}%`;
+            
+            elements.attackRate.textContent = `${state.attackRate.toLocaleString()}/ثانية`;
+            elements.activeThreads.textContent = state.activeThreads.toLocaleString();
+            elements.bandwidth.textContent = `${state.bandwidth} م.ب/ث`;
+        }
+        
+        // تشغيل صوت
+        function playSound(type) {
+            // يمكن إضافة أصوات هنا
+            console.log(`Playing ${type} sound`);
+        }
+        
+        // حفظ الحالة
+        function saveState() {
+            localStorage.setItem('ddosSimulatorState', JSON.stringify(state));
+        }
+        
+        // تحميل الحالة
+        function loadState() {
+            const saved = localStorage.getItem('ddosSimulatorState');
+            if (saved) {
+                state = JSON.parse(saved);
+                
+                // تحديث الواجهة مع الحالة المحفوظة
+                if (state.target) {
+                    elements.currentTarget.textContent = state.target;
+                    elements.currentTarget.style.color = '#00ff00';
+                    elements.targetInput.value = state.target;
+                }
+                
+                // تحديث أزرار القوة
+                document.querySelectorAll('.strength-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.strength === state.strength);
+                });
+                
+                // تحديث أزرار البروكسي
+                document.querySelectorAll('.proxy-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.proxy === state.proxy);
+                });
+                
+                // تحديث نوع الهجوم
+                elements.attackType.value = state.attackType;
+                
+                // إذا كان الهجوم نشطاً، إعادة تشغيله
+                if (state.attackActive) {
+                    startAttack();
+                }
+            }
+        }
+        
+        // بدء التشغيل
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // تأثيرات إضافية
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                document.querySelector('.title').classList.add('glitch-text');
+                setTimeout(() => {
+                    document.querySelector('.title').classList.remove('glitch-text');
+                }, 300);
+            }
+        }, 2000);
+        
+        // تحديث عشوائي للأرقام حتى عند التوقف (لتأثير واقعي)
+        setInterval(() => {
+            if (!state.attackActive && Math.random() > 0.8) {
+                elements.packetsSent.textContent = Math.floor(Math.random() * 1000).toLocaleString();
+                elements.attackRate.textContent = `${Math.floor(Math.random() * 100)}/ثانية`;
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
